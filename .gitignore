@@ -1,0 +1,5 @@
+*
+!.gitignore
+!*.sh
+note.sh
+execmake.sh
