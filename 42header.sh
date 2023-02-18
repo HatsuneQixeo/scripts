@@ -49,16 +49,16 @@ else
 	args="$@"
 fi
 
-for dir in $args
+for path in $args
 do
 	# Update if the given path is a source file
-	if ft_fileisc "$dir"
+	if ft_fileisc "$path"
 	then
-		apply_header "$dir" && header_echo "$dir"
-	elif [ -d "$dir" ]
+		apply_header "$path" && header_echo "$path"
+	elif [ -d "$path" ]
 	then
-		apply_dir_headers "$dir"
+		apply_dir_headers "$path"
 	else
-		header_echo "$dir: No such directory or file"
+		header_echo "$path: No such directory or file"
 	fi
 done

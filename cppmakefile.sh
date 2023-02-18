@@ -98,14 +98,13 @@ function ifexist ()
 {
 	ft_write="$1"
 	name="$2"
-	write='y'
 	if [ -e "$name" ]
 	then
 		read -p "($name) already exist. Overwrite [y/n]: " write
-	fi
-	if [ "$write" != 'y' ]
-	then
-		return 1
+		if [ "$write" != 'y' ]
+		then
+			return 1
+		fi
 	fi
 	"$ft_write" ${@:3} > "$name"
 }
@@ -115,7 +114,7 @@ then
 	name='default'
 else
 	name="$@"
-	name="${name// /_}"
+	name="${name//" "/"_"}"
 fi
 
 ifexist cppmakefile Makefile "$name" 

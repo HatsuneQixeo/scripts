@@ -29,7 +29,7 @@ function exmake ()
 	echo "$prgname: make: ex00 - ex$(printf "%02d" $(($amount - 1)))" 
 	for (( i = 0; i < $amount; i++))
 	do
-		dirname=""ex$(printf "%02d" $i)""
+		dirname="ex$(printf "%02d" $i)"
 		if ! [ -e "$dirname" ]
 		then
 			mkdir $dirname && exdir_echo "Maked: $dirname"
@@ -56,7 +56,7 @@ function exfclean ()
 	if [ "$write" != 'y' ]
 	then
 		exdir_echo "Canceled fclean"
-		return 1
+		return
 	fi
 
 	exdir_echo "fclean: ex00 - ex99"
@@ -75,12 +75,12 @@ then
 	<< "EOF" cat
 exdir.sh <action> <amount>
 	action
-		* make	: create ex00 to ex$((amount - 1))
+		* make	: create ex00 to ex(amount - 1)
 		* clean	: remove ex00 to ex99
 		* fclean: force remove ex00 to ex99
 	amount: amount to make, maximum 100
 EOF
-	exit 0
+	exit 1
 elif [ $# -gt 2 ]
 then
 	exdir_error "Too many arguments"
