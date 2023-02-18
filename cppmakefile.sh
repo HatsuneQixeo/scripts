@@ -115,7 +115,7 @@ then
 	name='default'
 else
 	name="$@"
-	name=${name// /_}
+	name="${name// /_}"
 fi
 
 ifexist cppmakefile Makefile "$name" 

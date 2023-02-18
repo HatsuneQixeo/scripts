@@ -1,64 +1,102 @@
-function getamount ()
+prgname="exdir"
+
+function exdir_echo ()
 {
-	if [ -z "$1" ]; then
-		return 0
-	elif
+	echo "$prgname: $@"
+}
+
+function exdir_error ()
+{
+	echo "$prgname: error: $@"
+	exit 1
 }
 
 function exmake ()
 {
 	amount="$1"
 
-	if [ -z "$amount" ]; then
-		return 1
+	if [ -z "$amount" ]
+	then
+		exdir_error "Missing argument for make"
+	elif ! [[ "$amount" =~ ^-?[0-9]+$ ]]
+	then
+		exdir_error "$amount is not integer"
+	elif [ $amount -gt 100 ]
+	then
+		exdir_error "$amount is more than 100"
 	fi
-	echo "$0: making ex00 - ex$(($amount - 1))"
+
+	echo "$prgname: make: ex00 - ex$(printf "%02d" $(($amount - 1)))" 
 	for (( i = 0; i < $amount; i++))
 	do
-		mkdir ex$i
+		dirname=""ex$(printf "%02d" $i)""
+		if ! [ -e "$dirname" ]
+		then
+			mkdir $dirname || echo $?
+		fi
 	done
 }
 
 function exclean ()
 {
-	if [ -z "$1" ]; then
-		amount=99
-	else
-		amount=$1
-	fi
-	echo "$0: cleaning"
+	exdir_echo "clean: ex00 - ex99"
 	for i in {0..99}
 	do
-		rmdir ex$i
+		dirname="ex$(printf "%02d" $i)"
+		if [ -e "$dirname" ]
+		then
+			rmdir $dirname
+		fi
 	done
 }
 
 function exfclean ()
 {
-	read -p "$0: Force clean will wipe everything, are you sure? [y/n]" write
-	if [ "$write" != 'y' ]; then
-		echo "$0: Canceled fclean"
+	read -p "$prgname: Force clean will wipe everything, are you sure? [y/n] " write
+	if [ "$write" != 'y' ]
+	then
+		exdir_echo "Canceled fclean"
 		return 1
 	fi
-	echo "$0: fclean: ex00 - ex$2"
+
+	exdir_echo "fclean: ex00 - ex99"
 	for i in {0..99}
 	do
-		rm -rf ex$i
+		dirname="ex$(printf "%02d" $i)"
+		if [ -e "$dirname" ]
+		then
+			rm -rf "$dirname"
+		fi
 	done
 }
 
-action="$1"
-
-if [ "$action" == "clean" ]; then
-	exclean
-elif ! [[ "$2" =~ ^-?[0-9]+$ ]]; then
-	echo "error: $2 is not an integer"
-	exit 1
-elif [ "$action" == "make" ]; then
-	exmake "$2"
-else
-	echo "unknown action: $action"
-	exit 1
+if [ $# -eq 0 ]
+then
+	<< "EOF" cat
+exdir.sh <action> <amount>
+	action
+		* make	: create ex00 to ex$((amount - 1))
+		* clean	: remove ex00 to ex99
+		* fclean: force remove ex00 to ex99
+	amount: amount to make, maximum 100
+EOF
+	exit 0
+elif [ $# -gt 2 ]
+then
+	exdir_error "Too many arguments"
 fi
 
-amount="$2"
+action="$1"
+
+if [ "$action" == "clean" ]
+then
+	exclean
+elif [ "$action" == "fclean" ]
+then
+	exfclean
+elif [ "$action" == "make" ]
+then
+	exmake "$2"
+else
+	exdir_error "Unknown action: $action"
+fi
