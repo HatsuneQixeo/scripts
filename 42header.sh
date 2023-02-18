@@ -1,4 +1,3 @@
-
 function ft_fileisc()
 {
 	# Extract the suffix, saving any character beyond . letter
@@ -8,59 +7,37 @@ function ft_fileisc()
 
 function header_echo()
 {
-	echo 42header: "$@"
+	echo "42header: $@"
 }
 
 # Open the file in Vim and apply the header
-function ft_update_addheader()
+function apply_header()
 {
+	# Deadly bug with -e:
+	#	It can freeze the whole script if the given file does not exist?
+	#	or is it nonexist directory?
 	vim -e "$1" -c "Stdheader" -c "wq" > /dev/null
 	return $?
 }
 
-function ft_update()
+function apply_dir_headers()
 {
-	dir="$1"
-	if ! [ -e "$dir" ]
-	then
-		header_echo file not exist: $dir
-		return
-	fi
-	# Update if the given path is a source file
-	if ft_fileisc "$dir"
-	then
-		ft_update_addheader "$dir"
-		header_echo "$dir"
-	fi
-	# Returns if the given path is not a directory
-	if ! [ -d "$dir" ]
-	then
-		return
-	fi
+	# Just to keep the display consistent
+	dir="${1//\//}/"
 	# Get the list of files in the specified directory
 	arr_files="$(find "$dir" -name "*.c") $(find "$dir" -name "*.h")"
-	files_updated=""
-	# Loop through the files in the directory
+	# Return if nothing is found
+	if [ -z "$arr_files" ]
+	then
+		return
+	fi
+	# Pattern substitution, ex: mikudir/miku.c mikudir/miku.h -> miku.c miku.h
+	arr_files="${arr_files//$dir\//}"
+	header_echo "$dir"
 	for file in $arr_files
 	do
-		# Exclude files that are not .c or .h suffix
-		# if ! ft_fileisc "$file"
-		# then
-		# 	continue ;
-		# fi
-		ft_update_addheader "$1/$file"
-		files_updated+="$file	"
-		# Append the valid argument
-		
+		apply_header "$dir/$file" && echo "	$file"
 	done
-	if [ -n "$files_updated" ]
-	then
-		header_echo "$dir"
-		for file in $files_updated
-		do
-			echo "	$file"
-		done
-	fi
 }
 
 # Checking the argc
@@ -68,12 +45,20 @@ if [ $# -eq 0 ]
 then
 	args="$(find . -name "*.c") $(find . -name "*.h")"
 else
+	# potential bug?
 	args="$@"
 fi
 
-# Iterate through every given arguments
 for dir in $args
 do
-	ft_update "$dir"
+	# Update if the given path is a source file
+	if ft_fileisc "$dir"
+	then
+		apply_header "$dir" && header_echo "$dir"
+	elif [ -d "$dir" ]
+	then
+		apply_dir_headers "$dir"
+	else
+		header_echo "$dir: No such directory or file"
+	fi
 done
-# $(find "$dir" -mindepth 1 -maxdepth 1)

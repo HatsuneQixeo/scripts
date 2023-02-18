@@ -32,7 +32,7 @@ function exmake ()
 		dirname=""ex$(printf "%02d" $i)""
 		if ! [ -e "$dirname" ]
 		then
-			mkdir $dirname || echo $?
+			mkdir $dirname && exdir_echo "Maked: $dirname"
 		fi
 	done
 }
@@ -45,7 +45,7 @@ function exclean ()
 		dirname="ex$(printf "%02d" $i)"
 		if [ -e "$dirname" ]
 		then
-			rmdir $dirname
+			rmdir $dirname && exdir_echo "Removed: $dirname"
 		fi
 	done
 }
@@ -65,7 +65,7 @@ function exfclean ()
 		dirname="ex$(printf "%02d" $i)"
 		if [ -e "$dirname" ]
 		then
-			rm -rf "$dirname"
+			rm -rf "$dirname" && exdir_echo "Removed: $dirname"
 		fi
 	done
 }
