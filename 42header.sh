@@ -1,8 +1,8 @@
 function ft_fileisc()
 {
-	# Extract the suffix, saving any character beyond . letter
+	# Extract the suffix, saving every characters beyond the last '.' letter
 	suffix=${1##*.}
-	return $($([ "$suffix" == 'c' ] || [ "$suffix" == 'h' ]) && ! [ -d "$1" ])
+	return $([ "$suffix" == 'c' ] || [ "$suffix" == 'h' ])
 }
 
 function header_echo()
@@ -13,10 +13,16 @@ function header_echo()
 # Open the file in Vim and apply the header
 function apply_header()
 {
+	file="$1"
 	# Deadly bug with -e:
 	#	It can freeze the whole script if the given file does not exist?
 	#	or is it nonexist directory?
-	vim -e "$1" -c "Stdheader" -c "wq" > /dev/null
+	if ! [ -e "$file" ]
+	then
+		header_echo ": $file: No such directory or file (in apply_header)"
+		return 1
+	fi
+	vim -e "$file" -c "Stdheader" -c "wq" > /dev/null
 	return $?
 }
 
@@ -51,14 +57,16 @@ fi
 
 for path in $args
 do
-	# Update if the given path is a source file
-	if ft_fileisc "$path"
+	if ! [-e "$path" ]
 	then
-		apply_header "$path" && header_echo "$path"
+		header_echo "$path: No such directory or file"
 	elif [ -d "$path" ]
 	then
 		apply_dir_headers "$path"
+	elif ft_fileisc "$path"
+	then
+		apply_header "$path" && header_echo "$path"
 	else
-		header_echo "$path: No such directory or file"
+		header_echo "$path: Is not a c source file"
 	fi
 done
