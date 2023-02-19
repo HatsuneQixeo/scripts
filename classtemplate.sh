@@ -1,7 +1,8 @@
 function classtemplate_header ()
 {
-	name="$@"
-	capname="$(tr [:lower:] [:upper:] <<< "$name")"
+	local	name="$@"
+	local	capname="$(tr [:lower:] [:upper:] <<< "$name")"
+
 	<< EOF cat
 #ifndef ${capname}_HPP
 # define ${capname}_HPP
@@ -25,7 +26,8 @@ EOF
 
 function classtemplate_source ()
 {
-	name="$@"
+	local	name="$@"
+
 	<< EOF cat
 #include "$name.hpp"
 
@@ -56,7 +58,8 @@ EOF
 
 for file in "$@"
 do
-	file="${file// /_}"
-	classtemplate_header "$file" > "$file.hpp"
-	classtemplate_source "$file" > "$file.cpp"
+	dir="~$file"
+	mkdir -p "$dir"
+	classtemplate_header "$file" > "$dir/$file.hpp"
+	classtemplate_source "$file" > "$dir/$file.cpp"
 done

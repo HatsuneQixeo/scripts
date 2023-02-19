@@ -15,11 +15,12 @@ function cppmakefile ()
 	echo "NAME		:=	$1"
 	<< "EOF" cat
 CC			:=	c++
-CPPFLAGS	:=	-Wall -Werror -Wextra -std=c++98 -I.
-HEADER		:=	$(wildcard *.hpp)
-SRC_DIR		:=	srcs/
-SRCS		:=	$(wildcard ${SRC_DIR}*.cpp)
-OBJ_DIR		:=	objs/
+CPPFLAGS	:=	-Wall -Werror -Wextra -std=c++98
+SRC_DIR		:=	srcs
+HEADER		:=	$(shell find ${SRC_DIR} -name "*.hpp")
+INCLUDE		:=	$(addprefix -I, $(dir ${HEADER}))
+SRCS		:=	$(shell find ${SRC_DIR} -name "*.cpp")
+OBJ_DIR		:=	objs
 OBJS 		:=	$(patsubst ${SRC_DIR}%.cpp, ${OBJ_DIR}%.o, ${SRCS})
 RM			:=	rm -rf
 
@@ -28,8 +29,10 @@ all: ${OBJ_DIR} ${NAME}
 ${OBJ_DIR}:
 	mkdir $@
 
-${OBJ_DIR}%.o: ${SRC_DIR}%.cpp ${HEADER}
-	${CC} ${CPPFLAGS} -c $< -o $@
+${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp ${HEADER}
+	@mkdir -p ${@D}
+	@echo "${CC} ${CPPFLAGS} -I\$${include} -c $< -o $@"
+	@${CC} ${CPPFLAGS} ${INCLUDE} -c $< -o $@
 
 ${NAME}: ${OBJS}
 	${CC} ${CPPFLAGS} $^ -o $@
@@ -114,7 +117,6 @@ then
 	name='default'
 else
 	name="$@"
-	name="${name//" "/"_"}"
 fi
 
 ifexist cppmakefile Makefile "$name" 
