@@ -1,11 +1,11 @@
 function classtemplate_header ()
 {
 	local	name="$@"
-	local	capname="$(tr [:lower:] [:upper:] <<< "$name")"
+	local	capguard="$(tr [:lower:] [:upper:] <<< "$name")_HPP"
 
 	<< EOF cat
-#ifndef ${capname}_HPP
-# define ${capname}_HPP
+#ifndef $capguard
+# define $capguard
 
 # include <iostream>
 
