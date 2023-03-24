@@ -1,14 +1,15 @@
-function stdmain ()
-{
-	<< "EOF" cat
-#include <iostream>
+# Never Again
+# function stdmain ()
+# {
+# 	<< "EOF" cat
+# #include <iostream>
 
-int	main(void)
-{
-	std::cout << "ミク: こんにちは、世界" << std::endl;
-}
-EOF
-}
+# int	main(void)
+# {
+# 	std::cout << "ミク: こんにちは、世界" << std::endl;
+# }
+# EOF
+# }
 
 function cppmakefile ()
 {
@@ -24,26 +25,46 @@ OBJ_DIR		:=	objs
 OBJS 		:=	$(patsubst ${SRC_DIR}%.cpp, ${OBJ_DIR}%.o, ${SRCS})
 RM			:=	rm -rf
 
-all: ${OBJ_DIR} ${NAME}
+GREY		:=	\033[30m
+RED			:=	\033[31m
+CYAN		:=	\033[36m
+LIGHT_CYAN	:=	\033[1;36m
+RESET		:=	\033[0m
+
+all: ${NAME}
 
 ${OBJ_DIR}:
-	mkdir $@
+	@printf "${GREY}mkdir $@${RESET}\n"
+	@mkdir $@
 
-${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp ${HEADER}
+${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp ${HEADER} | ${OBJ_DIR}
 	@mkdir -p ${@D}
-	@echo "${CC} ${CPPFLAGS} -I\$${include} -c $< -o $@"
+	@printf "${CYAN}${CC} ${CPPFLAGS} \$${INCLUDE} -c $< -o $@${RESET}\n"
 	@${CC} ${CPPFLAGS} ${INCLUDE} -c $< -o $@
 
 ${NAME}: ${OBJS}
-	${CC} ${CPPFLAGS} $^ -o $@
+	@printf "${LIGHT_CYAN}${CC} ${CPPFLAGS} $^ -o $@${RESET}\n"
+	@${CC} ${CPPFLAGS} $^ -o $@
+
+san:
+	@printf "${LIGHT_CYAN}SANITIZER: ON${RESET}\n"
+	@${CC} ${CPPFLAGS} ${INCLUDE} ${SRCS} -o ${NAME}
 
 clean:
-	${RM} ${OBJ_DIR}
+	@printf "${RED}${RM} ${OBJ_DIR}${RESET}\n"
+	@${RM} ${OBJ_DIR}
 
 fclean: clean
-	${RM} ${NAME}
+	@printf "${RED}${RM} ${NAME}${RESET}\n"
+	@${RM} ${NAME}
 
 re:	fclean all
+
+run: ${NAME}
+	./$<
+
+log: ${NAME}
+	./$< > log.log
 EOF
 }
 
@@ -73,6 +94,6 @@ else
 fi
 
 ifexist cppmakefile Makefile "$name" 
-mkdir -p srcs
-ifexist stdmain "srcs/main.cpp"
+# mkdir -p srcs
+# ifexist stdmain "srcs/main.cpp"
 

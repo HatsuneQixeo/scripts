@@ -1,7 +1,7 @@
 # Duh
-# mkdir ex{00.99}
-# rmdir ex{00.99}
-# rm -rf ex{00.99}
+# mkdir ex{00..99}
+# rmdir ex{00..99}
+# rm -rf ex{00..99}
 
 prgname="exdir"
 

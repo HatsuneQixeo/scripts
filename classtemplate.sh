@@ -1,6 +1,7 @@
+#!/bin/bash
+
 function classtemplate_header ()
 {
-	local	name="$@"
 	local	capguard="$(tr [:lower:] [:upper:] <<< "$name")_HPP"
 
 	<< EOF cat
@@ -14,7 +15,7 @@ class $name
 	private:
 
 	public:
-		$name(void);
+		$constructor;
 		$name(const $name &ref);
 		~$name(void);
 		$name	&operator=(const $name &ref);
@@ -26,40 +27,35 @@ EOF
 
 function classtemplate_source ()
 {
-	local	name="$@"
-
 	<< EOF cat
 #include "$name.hpp"
 
-$name::$name(void)
+$name::$constructor
 {
-	std::cout << "$name Default Constructor" << std::endl;
 }
 
 $name::$name(const $name &ref)
 {
-	std::cout << "$name Copy Constructor" << std::endl;
 	*this = ref;
 }
 
 $name	&$name::operator=(const $name &ref)
 {
-	std::cout << "$name Copy Assignment Operator" << std::endl;
 	/* Copy assignment */
 	return (*this);
 }
 
 $name::~$name(void)
 {
-	std::cout << "$name Destructor" << std::endl;
 }
 EOF
 }
 
-for file in "$@"
+for name in "$@"
 do
-	dir="~$file"
+	dir="~$name"
 	mkdir -p "$dir"
-	classtemplate_header "$file" > "$dir/$file.hpp"
-	classtemplate_source "$file" > "$dir/$file.cpp"
+	constructor="$name(void)"
+	classtemplate_header "$name" > "$dir/$name.hpp"
+	classtemplate_source "$name" > "$dir/$name.cpp"
 done

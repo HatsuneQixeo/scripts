@@ -1,7 +1,4 @@
-
-lst_dir="$(ls -d */)"
-
-for dir in $lst_dir
+for dir in ex*/
 do
 	echo "make -C $dir $1"
 	make -C "$dir" $1
