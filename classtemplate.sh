@@ -15,10 +15,19 @@ class $name
 	private:
 
 	public:
+		/* Constructor && Destructor */
 		$constructor;
 		$name(const $name &ref);
 		~$name(void);
+
+		/* OperatorOverload */
 		$name	&operator=(const $name &ref);
+
+		/* Getters */
+
+
+		/* MemberFunctions */
+
 };
 
 #endif
@@ -30,32 +39,41 @@ function classtemplate_source ()
 	<< EOF cat
 #include "$name.hpp"
 
+/* Constructor && Destructor */
 $name::$constructor
-{
-}
+{}
 
 $name::$name(const $name &ref)
 {
 	*this = ref;
 }
 
+$name::~$name(void)
+{}
+
+
+/* Operator Overload */
 $name	&$name::operator=(const $name &ref)
 {
 	/* Copy assignment */
 	return (*this);
 }
 
-$name::~$name(void)
-{
-}
+
+/* Getters */
+
+
+
+/* MemberFunctions */
+
+
 EOF
 }
 
 for name in "$@"
 do
-	dir="~$name"
-	mkdir -p "$dir"
+	mkdir -p "$name"
 	constructor="$name(void)"
-	classtemplate_header "$name" > "$dir/$name.hpp"
-	classtemplate_source "$name" > "$dir/$name.cpp"
+	classtemplate_header "$name" > "$name/$name.hpp"
+	classtemplate_source "$name" > "$name/$name.cpp"
 done

@@ -48,7 +48,7 @@ ${NAME}: ${OBJS}
 
 san:
 	@printf "${LIGHT_CYAN}SANITIZER: ON${RESET}\n"
-	@${CC} ${CPPFLAGS} ${INCLUDE} ${SRCS} -o ${NAME}
+	@${CC} ${CPPFLAGS} -fsanitize=address -g ${INCLUDE} ${SRCS} -o ${NAME}
 
 clean:
 	@printf "${RED}${RM} ${OBJ_DIR}${RESET}\n"
