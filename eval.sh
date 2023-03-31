@@ -67,5 +67,4 @@ then
 fi
 name="${link#*-*-*-*-*-*-*-*-}"
 
-git clone "$link" "$name" && code "./$name/"
-$SHELL
+git clone "$link" "$name" && cd "./$name/" && code "." && $SHELL
