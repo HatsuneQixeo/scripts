@@ -1,15 +1,15 @@
 # Never Again
-# function stdmain ()
-# {
-# 	<< "EOF" cat
-# #include <iostream>
+function stdmain ()
+{
+	<< "EOF" cat
+#include <iostream>
 
-# int	main(void)
-# {
-# 	std::cout << "ミク: こんにちは、世界" << std::endl;
-# }
-# EOF
-# }
+int	main(void)
+{
+	std::cout << "ミク: こんにちは、世界" << std::endl;
+}
+EOF
+}
 
 function cppmakefile ()
 {
@@ -18,7 +18,7 @@ function cppmakefile ()
 CC			:=	c++
 CPPFLAGS	:=	-Wall -Werror -Wextra -std=c++98
 SRC_DIR		:=	srcs
-HEADER		:=	$(shell find ${SRC_DIR} -name "*.hpp")
+HEADER		:=	$(shell find ${SRC_DIR} -name "*.hpp") $(shell find ${SRC_DIR} -name "*.tpp")
 INCLUDE		:=	$(addprefix -I, $(dir ${HEADER}))
 SRCS		:=	$(shell find ${SRC_DIR} -name "*.cpp")
 OBJ_DIR		:=	objs
@@ -94,6 +94,7 @@ else
 fi
 
 ifexist cppmakefile Makefile "$name" 
-# mkdir -p srcs
+mkdir -p srcs
 # ifexist stdmain "srcs/main.cpp"
+! [ -e srcs/main.cpp ] && stdmain > srcs/main.cpp
 
