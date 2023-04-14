@@ -31,6 +31,8 @@ $templateName::~$name(void)
 template <typename T>
 $templateName	&$templateName::operator=(const $templateName &ref)
 {
+	if (this == &ref)
+		return (*this);
 	/* Copy assignment */
 	return (*this);
 }
