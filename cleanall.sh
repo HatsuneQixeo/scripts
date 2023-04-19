@@ -16,7 +16,8 @@ function cleanRougePrograms()
 	prg="$(find . -name a.out) $(find . -name '*.dSYM') $(find . -name '.DS_Store')"
 	[[ "$prg" =~ ^[[:space:]]+$ ]] && return 1
 
-	read -p "Remove $prg? [y/N] " -n 1
+	echo "Remove: ?"
+	read -p "$prg [y/N] " -n 1
 	echo
 
 	if [[ "$REPLY" =~ ^[Yy]$ ]]

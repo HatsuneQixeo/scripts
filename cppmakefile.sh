@@ -16,13 +16,17 @@ function cppmakefile ()
 	echo "NAME		:=	$@"
 	<< "EOF" cat
 CC			:=	c++
-CPPFLAGS	:=	-Wall -Werror -Wextra -std=c++98
+CXXFLAGS	:=	-Wall -Werror -Wextra -std=c++98
+
 SRC_DIR		:=	srcs
-HEADER		:=	$(shell find ${SRC_DIR} -name "*.hpp") $(shell find ${SRC_DIR} -name "*.tpp")
-INCLUDE		:=	$(addprefix -I, $(dir ${HEADER}))
 SRCS		:=	$(shell find ${SRC_DIR} -name "*.cpp")
+
+HEADER		:=	$(shell find ${SRC_DIR} -name "*.hpp") $(shell find ${SRC_DIR} -name "*.tpp")
+CPPFLAGS	:=	$(addprefix -I, $(dir ${HEADER}))
+
 OBJ_DIR		:=	objs
 OBJS 		:=	$(patsubst ${SRC_DIR}%.cpp, ${OBJ_DIR}%.o, ${SRCS})
+
 RM			:=	rm -rf
 
 GREY		:=	\033[30m
@@ -39,16 +43,16 @@ ${OBJ_DIR}:
 
 ${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp ${HEADER} | ${OBJ_DIR}
 	@mkdir -p ${@D}
-	@printf "${CYAN}${CC} ${CPPFLAGS} \$${INCLUDE} -c $< -o $@${RESET}\n"
-	@${CC} ${CPPFLAGS} ${INCLUDE} -c $< -o $@
+	@printf "${CYAN}${CC} ${CXXFLAGS} \$${CPPFLAGS} -c $< -o $@${RESET}\n"
+	@${CC} ${CXXFLAGS} ${CPPFLAGS} -c $< -o $@
 
 ${NAME}: ${OBJS}
-	@printf "${LIGHT_CYAN}${CC} ${CPPFLAGS} $^ -o $@${RESET}\n"
-	@${CC} ${CPPFLAGS} $^ -o $@
+	@printf "${LIGHT_CYAN}${CC} ${CXXFLAGS} $^ -o $@${RESET}\n"
+	@${CC} ${CXXFLAGS} $^ -o $@
 
 san:
 	@printf "${LIGHT_CYAN}SANITIZER: ON${RESET}\n"
-	@${CC} ${CPPFLAGS} -fsanitize=address -g ${INCLUDE} ${SRCS} -o ${NAME}
+	@${CC} ${CXXFLAGS} -fsanitize=address -g ${CPPFLAGS} ${SRCS} -o ${NAME}
 
 clean:
 	@printf "${RED}${RM} ${OBJ_DIR}${RESET}\n"
