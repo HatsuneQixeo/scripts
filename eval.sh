@@ -22,6 +22,8 @@ function newdir()
 	return $?
 }
 
+# Don't think I like the idea of getting index input,
+# not to mention user also has to read the index even with clear destination
 function projectdir()
 {
 	local	arr_dir=()
@@ -67,4 +69,4 @@ then
 fi
 name="${link#*-*-*-*-*-*-*-*-}"
 
-git clone "$link" "$name" && cd "./$name/" && code "." && $SHELL
+git clone "$link" "$name" && cd "./$name/" && code "."

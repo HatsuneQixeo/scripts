@@ -34,10 +34,7 @@ function apply_dir_headers()
 	# Get the list of files in the specified directory
 	local	arr_files="$(find "$dir" -name "*.c") $(find "$dir" -name "*.h")"
 	# Return if nothing is found
-	if [ -z "$arr_files" ]
-	then
-		return
-	fi
+	[ -z "$arr_files" ] && return
 	# Pattern substitution, ex: mikudir/miku.c mikudir/miku.h -> miku.c miku.h
 	arr_files="${arr_files//$dir\//}"
 	header_echo "$dir/"

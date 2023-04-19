@@ -55,6 +55,8 @@ $name::~$name(void)
 /* Operator Overload */
 $name	&$name::operator=(const $name &ref)
 {
+	if (this == &ref)
+		return (*this);
 	/* Copy assignment */
 	return (*this);
 }
