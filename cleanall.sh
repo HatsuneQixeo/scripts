@@ -23,7 +23,7 @@ function cleanRougePrograms()
 	if [[ "$REPLY" =~ ^[Yy]$ ]]
 	then
 		echo "Removing $prg"
-		rm -rf $prg
+		rm -r $prg
 	fi
 }
 
