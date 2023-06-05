@@ -1,5 +1,5 @@
-# Not gonna have any significant impact in terms of memory cleaned,
-# just a tool for cleaning the messed left behind
+# Not gonna have any significant impact in terms of memory gained,
+# just a tool for cleaning the mess left behind
 
 function makeFClean
 {
@@ -17,7 +17,7 @@ function cleanRougePrograms()
 	[[ "$prg" =~ ^[[:space:]]+$ ]] && return 1
 
 	echo "Remove: ?"
-	read -p "$prg [y/N] " -n 1
+	read -p "$prg [y/n] " -n 1
 	echo
 
 	if [[ "$REPLY" =~ ^[Yy]$ ]]

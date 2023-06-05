@@ -65,7 +65,7 @@ else
 	# Go to destination directory
 	cd "$dest_path" &&
 	# Invoke vscode, default into replacing the current available window unless dup is specified
-	code $([ -z "$dup" ] && echo -r) . &&
+	code $([ -z "$dup" ] && echo '-r') . &&
 	# Success return
 	return 0
 fi
