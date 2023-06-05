@@ -15,8 +15,13 @@ function cppmakefile ()
 {
 	echo "NAME		:=	$@"
 	<< "EOF" cat
-CC			:=	c++
+
+CXX			:=	c++
 CXXFLAGS	:=	-Wall -Werror -Wextra -std=c++98
+CXXFLAGS	+=	-g
+ifdef SAN
+CXXFLAGS	+=	-fsanitize=address -g -D SAN=1
+endif
 
 SRC_DIR		:=	srcs
 SRCS		:=	$(shell find ${SRC_DIR} -name "*.cpp")
@@ -26,8 +31,6 @@ CPPFLAGS	:=	$(addprefix -I, $(dir ${HEADER}))
 
 OBJ_DIR		:=	objs
 OBJS 		:=	$(patsubst ${SRC_DIR}%.cpp, ${OBJ_DIR}%.o, ${SRCS})
-
-RM			:=	rm -rf
 
 GREY		:=	\033[30m
 RED			:=	\033[31m
@@ -43,32 +46,22 @@ ${OBJ_DIR}:
 
 ${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp ${HEADER} | ${OBJ_DIR}
 	@mkdir -p ${@D}
-	@printf "${CYAN}${CC} ${CXXFLAGS} \$${CPPFLAGS} -c $< -o $@${RESET}\n"
-	@${CC} ${CXXFLAGS} ${CPPFLAGS} -c $< -o $@
+	@printf "${CYAN}${CXX} ${CXXFLAGS} \$${CPPFLAGS} -c $< -o $@${RESET}\n"
+	@${CXX} ${CXXFLAGS} ${CPPFLAGS} -c $< -o $@
 
 ${NAME}: ${OBJS}
-	@printf "${LIGHT_CYAN}${CC} ${CXXFLAGS} $^ -o $@${RESET}\n"
-	@${CC} ${CXXFLAGS} $^ -o $@
-
-san:
-	@printf "${LIGHT_CYAN}SANITIZER: ON${RESET}\n"
-	@${CC} ${CXXFLAGS} -fsanitize=address -g ${CPPFLAGS} ${SRCS} -o ${NAME}
+	@printf "${LIGHT_CYAN}${CXX} ${CXXFLAGS} $^ -o $@${RESET}\n"
+	@${CXX} ${CXXFLAGS} $^ -o $@
 
 clean:
-	@printf "${RED}${RM} ${OBJ_DIR}${RESET}\n"
-	@${RM} ${OBJ_DIR}
+	@printf "${RED}${RM} -r ${OBJ_DIR}${RESET}\n"
+	@${RM} -r ${OBJ_DIR}
 
 fclean: clean
 	@printf "${RED}${RM} ${NAME}${RESET}\n"
 	@${RM} ${NAME}
 
 re:	fclean all
-
-run: ${NAME}
-	./$<
-
-log: ${NAME}
-	./$< > log.log
 EOF
 }
 
@@ -77,8 +70,9 @@ EOF
 # ${3-?}: Argument given to the function
 function ifexist ()
 {
-	ft_write="$1"
-	name="$2"
+	local	ft_write="$1"
+	local	name="$2"
+
 	if [ -e "$name" ]
 	then
 		read -p "($name) already exist. Overwrite [y/n]: " write
