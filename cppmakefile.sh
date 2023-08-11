@@ -19,6 +19,7 @@ function cppmakefile ()
 CXX			:=	c++
 CXXFLAGS	:=	-Wall -Werror -Wextra -std=c++98
 CXXFLAGS	+=	-g
+# CXXFLAGS	+=	-Wno-unused-variable -Wno-unused-parameter -Wno-unused-function
 ifdef SAN
 CXXFLAGS	+=	-fsanitize=address -g -D SAN=1
 endif

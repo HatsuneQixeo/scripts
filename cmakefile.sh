@@ -6,7 +6,6 @@ function cmakefile()
 CC			:=	gcc
 CXXFLAGS	:=	-Wall -Werror -Wextra
 CXXFLAGS	+=	-g
-# CXXFLAGS	+=	-O3
 # CXXFLAGS	+=	-Wno-unused-variable -Wno-unused-parameter -Wno-unused-function
 ifdef SAN
 CXXFLAGS	+=	-fsanitize=address -g -D SAN=1
