@@ -17,7 +17,7 @@ function cppmakefile ()
 	<< "EOF" cat
 
 CXX			:=	c++
-CXXFLAGS	:=	-Wall -Werror -Wextra -std=c++98
+CXXFLAGS	:=	-Wall -Werror -Wextra -std=c++98 -pedantic
 CXXFLAGS	+=	-g
 # CXXFLAGS	+=	-Wno-unused-variable -Wno-unused-parameter -Wno-unused-function
 ifdef SAN

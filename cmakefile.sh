@@ -4,7 +4,7 @@ function cmakefile()
 	<< "EOF" cat
 
 CC			:=	gcc
-CXXFLAGS	:=	-Wall -Werror -Wextra
+CXXFLAGS	:=	-Wall -Werror -Wextra -pedantic
 CXXFLAGS	+=	-g
 # CXXFLAGS	+=	-Wno-unused-variable -Wno-unused-parameter -Wno-unused-function
 ifdef SAN
