@@ -3,15 +3,15 @@ function show_help
 	<< EOF cat >&2
 usage: exnext.sh {offset} [options] (while inside exercise directory)
 options:
-	new: create new exercise directory
-	dup: Invoke a new vscode window
-	help: show this help
+	new: Create a new exercise directory if there's no existing one
+	dup: Invoke a new vscode window if there's no existing one
+	help: Show this help
 EOF
 }
 
 function getFlags()
 {
-	dup=""
+	dup=false
 	for arg in "${@:2}"
 	do
 		# new is Copilot's ideas, quite intesting
@@ -24,9 +24,10 @@ function getFlags()
 			return 1
 		elif [[ "$arg" == "dup" ]]
 		then
-			dup="yes"
+			dup=true
 		else 
 			echo "Invalid Argument: $arg" >&2
+			show_help
 			return 2
 		fi
 	done
@@ -65,7 +66,7 @@ else
 	# Go to destination directory
 	cd "$dest_path" &&
 	# Invoke vscode, default into replacing the current available window unless dup is specified
-	code $([ -z "$dup" ] && echo '-r') . &&
+	code $([ $dup = false ] && echo '-r') . &&
 	# Success return
 	return 0
 fi
