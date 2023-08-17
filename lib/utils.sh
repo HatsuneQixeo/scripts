@@ -7,7 +7,7 @@ function newscript()
 	fi
 	for arg in "$@"
 	do
-		local	name="$arg".sh
+		local	name="$arg.sh"
 
 		touch "$name" && chmod +x "$name" && code "$name"
 	done

@@ -1,6 +1,7 @@
 *
 !.gitignore
 !*.sh
+!lib
 note.sh
 execmake.sh
 exclude/

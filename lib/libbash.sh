@@ -2,7 +2,7 @@ function getResponse()
 {
 	local	response
 	# -q doesn't work in bash, but -n 1 doesn't return immediately in zsh
-	echo "$1 [y/n]: " >&2 && read -q response
+	echo -n "$@ [y/n]: " >&2 && read -q response
 	# status is actually $?, so I gotta use another name, even if I declared it locally
 	local	STATUS=$?
 

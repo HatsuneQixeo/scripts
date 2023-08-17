@@ -6,13 +6,7 @@ export EVAL="$DOWNLOADS/code/kickoff_ev"
 export PRG="$HOME/exec"
 export PDF="$DOWNLOADS/pdf"
 export GIT="$HOME/Documents/GitHub"
-# Need a condition because this is appending
-if [[ "$PATH" =~ "$PRG" ]]
-then
-	echo "PATH already contains $PRG"
-else
-	PATH+=":$PRG:$HOME/Desktop/Visual Studio Code.app/Contents/Resources/app/bin"
-fi
+PATH+=":$PRG:$HOME/Desktop/Visual Studio Code.app/Contents/Resources/app/bin"
 
 # alias
 alias update="source $HOME/.zshenv"
@@ -50,20 +44,8 @@ export B_Magenta='\033[45m'
 export B_Cyan='\033[46m'
 export B_White='\033[47m'
 
-if [ -n "$(find "$PRG/notes/" -name "*.txt")" ]
-then
-	for txt in $PRG/notes/*.txt
-	do
-		echo "Note $(basename $txt)"
-		cat "$txt"
-	done
-fi
-cclean
-clear
-echo "ミク: お帰りなさいマスター!"
-#echo "ミク：マスターは今日も元気ですね!"
-
 # function similarly to include, assuming this file has only function
-source "$PRG/libbash.sh"
-source "$PRG/utils.sh"
-source "$PRG/searcher.sh"
+
+source "$PRG/lib/libbash.sh"
+source "$PRG/lib/utils.sh"
+source "$PRG/lib/searcher.sh"
