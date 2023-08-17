@@ -21,6 +21,9 @@ alias next="exgo +1"
 alias prev="exgo -1"
 alias back="code -r .."
 
+# updatemake
+alias updatecppmake="updatemake.sh cppmakefile.sh"
+
 # ANSI colour code
 export Reset='\033[0m'
 export Bold='\033[1m'
