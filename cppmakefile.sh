@@ -26,8 +26,9 @@ endif
 
 SRC_DIR		:=	srcs
 SRCS		:=	$(shell find ${SRC_DIR} -name "*.cpp")
+SRCS_T		:=	$(shell find ${SRC_DIR} -name "*.tpp")
 
-HEADER		:=	$(shell find ${SRC_DIR} -name "*.hpp") $(shell find ${SRC_DIR} -name "*.tpp")
+HEADER		:=	$(shell find ${SRC_DIR} -name "*.hpp")
 CPPFLAGS	:=	$(addprefix -I, $(dir ${HEADER}))
 
 OBJ_DIR		:=	objs
@@ -42,25 +43,29 @@ RESET		:=	\033[0m
 all: ${NAME}
 
 ${OBJ_DIR}:
-	@printf "${GREY}mkdir $@${RESET}\n"
-	@mkdir $@
+	@command="mkdir $@" && \
+	printf "${GREY}$$command${RESET}\n"
 
-${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp ${HEADER} | ${OBJ_DIR}
+${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp ${HEADER} ${SRCS_T} | ${OBJ_DIR}
 	@mkdir -p ${@D}
-	@printf "${CYAN}${CXX} ${CXXFLAGS} \$${CPPFLAGS} -c $< -o $@${RESET}\n"
-	@${CXX} ${CXXFLAGS} ${CPPFLAGS} -c $< -o $@
+	@command="${CXX} ${CXXFLAGS} ${CPPFLAGS} -c $< -o $@" \
+	&& printf "${CYAN}$$(sed 's@${CFLAGS}@\$${CFLAGS}@g' <<< "$$command")${RESET}\n" \
+	&& $$command
 
 ${NAME}: ${OBJS}
-	@printf "${LIGHT_CYAN}${CXX} ${CXXFLAGS} $^ -o $@${RESET}\n"
-	@${CXX} ${CXXFLAGS} $^ -o $@
+	@command="${CXX} ${CXXFLAGS} $^ -o $@" && \
+	printf "${LIGHT_CYAN}$$command${RESET}\n" && \
+	$$command
 
 clean:
-	@printf "${RED}${RM} -r ${OBJ_DIR}${RESET}\n"
-	@${RM} -r ${OBJ_DIR}
+	@command="${RM} -r ${OBJ_DIR}" && \
+	printf "${RED}$$command${RESET}\n" && \
+	$$command
 
 fclean: clean
-	@printf "${RED}${RM} ${NAME}${RESET}\n"
-	@${RM} ${NAME}
+	@command="${RM} ${NAME}" && \
+	printf "${RED}$$command${RESET}\n" && \
+	$$command
 
 re:	fclean all
 EOF
@@ -96,4 +101,4 @@ ifexist cppmakefile Makefile "$name"
 mkdir -p srcs
 # ifexist stdmain "srcs/main.cpp"
 ! [ -e srcs/main.cpp ] && stdmain > srcs/main.cpp
-
+exit 1
