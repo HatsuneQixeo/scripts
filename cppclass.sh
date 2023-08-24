@@ -20,13 +20,13 @@ class $name
 		$name(const $name &ref);
 		~$name(void);
 
-		/* OperatorOverload */
+		/* Operator Overloads */
 		$name	&operator=(const $name &ref);
 
 		/* Getters */
 
 
-		/* MemberFunctions */
+		/* Member Functions */
 
 };
 
@@ -52,7 +52,7 @@ $name::~$name(void)
 {}
 
 
-/* Operator Overload */
+/* Operator Overloads */
 $name	&$name::operator=(const $name &ref)
 {
 	if (this == &ref)
@@ -66,7 +66,7 @@ $name	&$name::operator=(const $name &ref)
 
 
 
-/* MemberFunctions */
+/* Member Functions */
 
 
 EOF

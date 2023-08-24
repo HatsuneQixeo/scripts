@@ -47,7 +47,7 @@ function apply_dir_headers()
 # Checking the argc
 if [ $# -eq 0 ]
 then
-	args="$(find . -name "*.c") $(find . -name "*.h")"
+	args="$(find . -name "*.c"; find . -name "*.h")"
 else
 	# potential bug?
 	args="$@"

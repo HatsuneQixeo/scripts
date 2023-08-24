@@ -27,7 +27,7 @@ $templateName::~$name(void)
 {}
 
 
-/* Operator Overload */
+/* Operator Overloads */
 template <typename T>
 $templateName	&$templateName::operator=(const $templateName &ref)
 {
@@ -42,7 +42,7 @@ $templateName	&$templateName::operator=(const $templateName &ref)
 
 
 
-/* MemberFunctions */
+/* Member Functions */
 
 
 #endif
@@ -64,7 +64,6 @@ template <typename T>
 class $name
 {
 	private:
-		T	data;
 
 	public:
 		/* Constructor && Destructor */
@@ -72,13 +71,13 @@ class $name
 		$name(const $templateName &ref);
 		~$name(void);
 
-		/* OperatorOverload */
+		/* Operator Overloads */
 		$templateName	&operator=(const $templateName &ref);
 
 		/* Getters */
 
 
-		/* MemberFunctions */
+		/* Member Functions */
 
 };
 
