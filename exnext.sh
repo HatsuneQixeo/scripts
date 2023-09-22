@@ -5,6 +5,7 @@ usage: exnext.sh {offset} [options] (while inside exercise directory)
 options:
 	new: Create a new exercise directory if there's no existing one
 	dup: Invoke a new vscode window if there's no existing one
+	cd: Do not invoke vscode
 	help: Show this help
 EOF
 }
@@ -15,21 +16,26 @@ function getFlags()
 	for arg in "${@:2}"
 	do
 		# new is Copilot's ideas, quite intesting
-		if [[ "$arg" == "new" ]]
-		then
+		case "$arg" in
+		"new")
 			mkdir "$dest_path" 2>/dev/null || echo "Directory already exists: $destination" >&2
-		elif [[ "$arg" == "help" ]]
-		then
+			;;
+		"help")
 			show_help
 			return 1
-		elif [[ "$arg" == "dup" ]]
-		then
+			;;
+		"dup")
 			dup=true
-		else 
+			;;
+		"cd")
+			termonly=true
+			;;
+		*)
 			echo "Invalid Argument: $arg" >&2
 			show_help
 			return 2
-		fi
+			;;
+		esac
 	done
 }
 
@@ -64,7 +70,7 @@ else
 	echo "destination: $destination"
 
 	# Go to destination directory
-	cd "$dest_path" &&
+	cd "$dest_path" && [ $termonly != true ] &&
 	# Invoke vscode, default into replacing the current available window unless dup is specified
 	code $([ $dup = false ] && echo '-r') . &&
 	# Success return
