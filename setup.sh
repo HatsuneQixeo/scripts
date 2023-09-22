@@ -12,7 +12,9 @@ PATH+=":$PRG:$HOME/Desktop/Visual Studio Code.app/Contents/Resources/app/bin"
 alias update="source $HOME/.zshenv"
 alias cclean="sh $PRG/Cleaner_42.sh"
 alias github="open $HOME/Desktop/GitHub Desktop.app"
+alias gimp="open ~/Desktop/gimp.app/"
 alias setup="code $PRG/setup.sh"
+alias prg="code $PRG"
 
 # exgo
 alias exgo="source $PRG/exnext.sh"
