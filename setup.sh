@@ -6,7 +6,12 @@ export EVAL="$DOWNLOADS/code/kickoff_ev"
 export PRG="$HOME/exec"
 export PDF="$DOWNLOADS/pdf"
 export GIT="$HOME/Documents/GitHub"
-PATH+=":$PRG:$HOME/Desktop/Visual Studio Code.app/Contents/Resources/app/bin"
+PATH="$HOME/miniconda3/bin/:\
+$PATH:\
+$PRG:\
+$HOME/Desktop/Visual Studio Code.app/Contents/Resources/app/bin:\
+$HOME/Library/Python/3.7/bin\
+"
 
 # alias
 alias update="source $HOME/.zshenv"
@@ -14,6 +19,12 @@ alias cclean="sh $PRG/Cleaner_42.sh"
 alias gimp="open ~/Desktop/gimp.app/"
 alias setup="code $PRG/setup.sh"
 alias prg="code $PRG"
+
+# python
+alias pynorm="$HOME/Library/Python/3.7/bin/flake8"
+alias venv="source venv/bin/activate"
+alias pyrun="python -m"
+export PPY="$CODE/../piscine_python"
 
 # exgo
 alias exgo="source $PRG/exnext.sh"
