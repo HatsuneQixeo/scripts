@@ -11,7 +11,7 @@ function tclasstemplate_source()
 
 # include "$name.hpp"
 
-/* Constructor && Destructor */
+/* Constructors && Destructor */
 template <typename T>
 $templateName::$constructor
 {}
@@ -66,7 +66,7 @@ class $name
 	private:
 
 	public:
-		/* Constructor && Destructor */
+		/* Constructors && Destructor */
 		$constructor;
 		$name(const $templateName &ref);
 		~$name(void);

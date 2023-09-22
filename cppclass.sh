@@ -15,7 +15,7 @@ class $name
 	private:
 
 	public:
-		/* Constructor && Destructor */
+		/* Constructors && Destructor */
 		$constructor;
 		$name(const $name &ref);
 		~$name(void);
@@ -39,7 +39,7 @@ function classtemplate_source ()
 	<< EOF cat
 #include "$name.hpp"
 
-/* Constructor && Destructor */
+/* Constructors && Destructor */
 $name::$constructor
 {}
 
