@@ -37,3 +37,8 @@ function exiter()
 		echo
 	done
 }
+
+function snippet()
+{
+	code $HOME/Library/Application\ Support/Code/User/snippets/
+}
