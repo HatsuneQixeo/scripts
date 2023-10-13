@@ -13,6 +13,7 @@ EOF
 function getFlags()
 {
 	dup=false
+	termonly=false
 	for arg in "${@:2}"
 	do
 		# new is Copilot's ideas, quite intesting
@@ -70,7 +71,8 @@ else
 	echo "destination: $destination"
 
 	# Go to destination directory
-	cd "$dest_path" && [ $termonly != true ] &&
+	! cd "$dest_path" && return 1
+	[ $termonly = true ] && return 0
 	# Invoke vscode, default into replacing the current available window unless dup is specified
 	code $([ $dup = false ] && echo '-r') . &&
 	# Success return
