@@ -1,8 +1,25 @@
 #!/bin/bash
 
-function classtemplate_header ()
+function capital_substitution()
 {
-	local	capguard="$(tr [:lower:] [:upper:] <<< "$name")_HPP"
+	local	str="$1"
+	local	result
+	local	prev_islower=1
+
+	for ((i = 0; i < ${#str}; i++))
+	do
+		local	c="${str:$i:1}"
+
+		[ $prev_islower -eq 0 ] && [[ "$c" =~ [[:upper:]] ]] && result+="_"
+		[[ "$c" =~ [[:lower:]] ]]; prev_islower=$?
+		result+="$c"
+	done
+	echo "$result" | tr [:lower:] [:upper:]
+}
+
+function classtemplate_header()
+{
+	local	capguard="$(capital_substitution "${name}HPP")"
 
 	<< EOF cat
 #ifndef $capguard
@@ -34,7 +51,7 @@ class $name
 EOF
 }
 
-function classtemplate_source ()
+function classtemplate_source()
 {
 	<< EOF cat
 #include "$name.hpp"
