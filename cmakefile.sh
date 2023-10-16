@@ -4,7 +4,7 @@ function cmakefile()
 	<< "EOF" cat
 
 CC			:=	gcc
-CXXFLAGS	:=	-Wall -Werror -Wextra -pedantic
+CXXFLAGS	:=	-Wall -Werror -Wextra -pedantic -MMD
 CXXFLAGS	+=	-g
 # CXXFLAGS	+=	-Wno-unused-variable -Wno-unused-parameter -Wno-unused-function
 ifdef SAN
@@ -20,6 +20,8 @@ CFLAGS		:=	$(addprefix -I, $(dir ${HEADER}) libft/include)
 OBJ_DIR		:=	objs
 OBJS 		:=	$(patsubst ${SRC_DIR}%.c, ${OBJ_DIR}%.o, ${SRCS})
 
+DEPENDS		:=	$(patsubst %.o, %.d, ${OBJS})
+
 LIBFT		:=	libft/libft.a
 LIBFT_MAKE	:=	make -C libft
 
@@ -31,15 +33,12 @@ RESET		:=	\033[0m
 
 all: libftupdate ${NAME}
 
+-include ${DEPENDS}
+
 libftupdate:
 	${LIBFT_MAKE}
 
-${OBJ_DIR}:
-	@command="mkdir $@" \
-	&& printf "${GREY}$$command${RESET}\n" \
-	&& $$command
-
-${OBJ_DIR}/%.o: ${SRC_DIR}/%.c ${HEADER} | ${OBJ_DIR}
+${OBJ_DIR}/%.o: ${SRC_DIR}/%.c
 	@mkdir -p ${@D}
 	@command="${CC} ${CXXFLAGS} ${CFLAGS} -c $< -o $@" \
 	&& printf "${CYAN}$$(sed 's@${CFLAGS}@\$${CFLAGS}@g' <<< "$$command")${RESET}\n" \

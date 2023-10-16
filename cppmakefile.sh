@@ -17,7 +17,7 @@ function cppmakefile ()
 	<< "EOF" cat
 
 CXX			:=	c++
-CXXFLAGS	:=	-Wall -Werror -Wextra -std=c++98 -pedantic
+CXXFLAGS	:=	-Wall -Werror -Wextra -std=c++98 -pedantic -MMD
 CXXFLAGS	+=	-g
 # CXXFLAGS	+=	-Wno-unused-variable -Wno-unused-parameter -Wno-unused-function
 ifdef SAN
@@ -26,13 +26,14 @@ endif
 
 SRC_DIR		:=	srcs
 SRCS		:=	$(shell find ${SRC_DIR} -name "*.cpp")
-SRCS_T		:=	$(shell find ${SRC_DIR} -name "*.tpp")
 
 HEADER		:=	$(shell find ${SRC_DIR} -name "*.hpp")
 CPPFLAGS	:=	$(addprefix -I, $(dir ${HEADER}))
 
 OBJ_DIR		:=	objs
 OBJS 		:=	$(patsubst ${SRC_DIR}%.cpp, ${OBJ_DIR}%.o, ${SRCS})
+
+DEPENDS		:=	$(patsubst %.o, %.d, ${OBJS})
 
 GREY		:=	\033[30m
 RED			:=	\033[31m
@@ -42,30 +43,28 @@ RESET		:=	\033[0m
 
 all: ${NAME}
 
-${OBJ_DIR}:
-	@command="mkdir $@" && \
-	printf "${GREY}$$command${RESET}\n"
+-include ${DEPENDS}
 
-${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp ${HEADER} ${SRCS_T} | ${OBJ_DIR}
+${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp
 	@mkdir -p ${@D}
 	@command="${CXX} ${CXXFLAGS} ${CPPFLAGS} -c $< -o $@" \
 	&& printf "${CYAN}$$(sed 's@${CFLAGS}@\$${CFLAGS}@g' <<< "$$command")${RESET}\n" \
 	&& $$command
 
 ${NAME}: ${OBJS}
-	@command="${CXX} ${CXXFLAGS} $^ -o $@" && \
-	printf "${LIGHT_CYAN}$$command${RESET}\n" && \
-	$$command
+	@command="${CXX} ${CXXFLAGS} $^ -o $@" \
+	&& printf "${LIGHT_CYAN}$$command${RESET}\n" \
+	&& $$command
 
 clean:
-	@command="${RM} -r ${OBJ_DIR}" && \
-	printf "${RED}$$command${RESET}\n" && \
-	$$command
+	@command="${RM} -r ${OBJ_DIR}" \
+	&& printf "${RED}$$command${RESET}\n" \
+	&& $$command
 
 fclean: clean
-	@command="${RM} ${NAME}" && \
-	printf "${RED}$$command${RESET}\n" && \
-	$$command
+	@command="${RM} ${NAME}" \
+	&& printf "${RED}$$command${RESET}\n" \
+	&& $$command
 
 re:	fclean all
 EOF
