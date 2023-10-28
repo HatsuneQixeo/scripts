@@ -3,7 +3,6 @@
 function tclasstemplate_source()
 {
 	local	capguard="$(tr [:lower:] [:upper:] <<< "$name")_TPP"
-	local	templateName="$name<T>"
 
 	<< EOF cat
 #ifndef $capguard
@@ -12,24 +11,24 @@ function tclasstemplate_source()
 # include "$name.hpp"
 
 /* Constructors && Destructor */
-template <typename T>
-$templateName::$constructor
+$template
+$templateName::$name(void)
 {}
 
-template <typename T>
-$templateName::$name(const $templateName &ref)
+$template
+$templateName::$name(const $name &ref)
 {
 	*this = ref;
 }
 
-template <typename T>
+$template
 $templateName::~$name(void)
 {}
 
 
 /* Operator Overloads */
-template <typename T>
-$templateName	&$templateName::operator=(const $templateName &ref)
+$template
+$templateName	&$templateName::operator=(const $name &ref)
 {
 	if (this == &ref)
 		return (*this);
@@ -52,7 +51,6 @@ EOF
 function tclasstemplate_header()
 {
 	local	capguard="$(tr [:lower:] [:upper:] <<< "$name")_HPP"
-	local	templateName="$name<T>"
 
 	<< EOF cat
 #ifndef $capguard
@@ -60,19 +58,19 @@ function tclasstemplate_header()
 
 # include <iostream>
 
-template <typename T>
+$template
 class $name
 {
 	private:
 
 	public:
 		/* Constructors && Destructor */
-		$constructor;
-		$name(const $templateName &ref);
+		$name(void);
+		$name(const $name &ref);
 		~$name(void);
 
 		/* Operator Overloads */
-		$templateName	&operator=(const $templateName &ref);
+		$name	&operator=(const $name &ref);
 
 		/* Getters */
 
@@ -89,8 +87,11 @@ EOF
 
 for name in "$@"
 do
-	mkdir -p "$name"
-	constructor="$name(void)"
-	tclasstemplate_header "$name" > "$name/$name.hpp"
-	tclasstemplate_source "$name" > "$name/$name.tpp"
+	template="template <typename T>"
+	templateName="$name<T>"
+	mkdir "$name" && (
+		cd "$name" || exit 1
+		tclasstemplate_header "$name" > "$name.hpp"
+		tclasstemplate_source "$name" > "$name.tpp"
+	) && echo "Created Template for Template class: $name"
 done

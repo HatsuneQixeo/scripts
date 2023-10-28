@@ -25,7 +25,7 @@ function classtemplate_header()
 #ifndef $capguard
 # define $capguard
 
-# include <iostream>
+# include <iosfwd>
 
 class $name
 {
@@ -33,7 +33,7 @@ class $name
 
 	public:
 		/* Constructors && Destructor */
-		$constructor;
+		$name(void);
 		$name(const $name &ref);
 		~$name(void);
 
@@ -47,6 +47,8 @@ class $name
 
 };
 
+std::ostream	&operator<<(std::ostream &os, const $name &ref);
+
 #endif
 EOF
 }
@@ -56,8 +58,10 @@ function classtemplate_source()
 	<< EOF cat
 #include "$name.hpp"
 
+#include <iostream>
+
 /* Constructors && Destructor */
-$name::$constructor
+$name::$name(void)
 {}
 
 $name::$name(const $name &ref)
@@ -85,14 +89,20 @@ $name	&$name::operator=(const $name &ref)
 
 /* Member Functions */
 
-
+/* Log */
+std::ostream	&operator<<(std::ostream &os, const $name &ref)
+{
+	/* Log */
+	return (os);
+}
 EOF
 }
 
 for name in "$@"
 do
-	mkdir -p "$name"
-	constructor="$name(void)"
-	classtemplate_header "$name" > "$name/$name.hpp"
-	classtemplate_source "$name" > "$name/$name.cpp"
+	mkdir "$name" && (
+		cd "$name" || exit 1
+		classtemplate_header "$name" > "$name.hpp"
+		classtemplate_source "$name" > "$name.cpp"
+	) && echo "Created Template for class: $name"
 done

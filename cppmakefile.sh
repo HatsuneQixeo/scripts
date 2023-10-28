@@ -31,7 +31,7 @@ HEADER		:=	$(shell find ${SRC_DIR} -name "*.hpp")
 CPPFLAGS	:=	$(addprefix -I, $(dir ${HEADER}))
 
 OBJ_DIR		:=	objs
-OBJS 		:=	$(patsubst ${SRC_DIR}%.cpp, ${OBJ_DIR}%.o, ${SRCS})
+OBJS		:=	$(patsubst ${SRC_DIR}%.cpp, ${OBJ_DIR}%.o, ${SRCS})
 
 DEPENDS		:=	$(patsubst %.o, %.d, ${OBJS})
 
