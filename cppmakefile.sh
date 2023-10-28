@@ -48,7 +48,7 @@ all: ${NAME}
 ${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp
 	@mkdir -p ${@D}
 	@command="${CXX} ${CXXFLAGS} ${CPPFLAGS} -c $< -o $@" \
-	&& printf "${CYAN}$$(sed 's@${CFLAGS}@\$${CFLAGS}@g' <<< "$$command")${RESET}\n" \
+	&& printf "${CYAN}$$(sed 's@${CPPFLAGS}@\$${CPPFLAGS}@g' <<< "$$command")${RESET}\n" \
 	&& $$command
 
 ${NAME}: ${OBJS}
