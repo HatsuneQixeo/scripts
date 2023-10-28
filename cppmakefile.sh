@@ -76,17 +76,22 @@ EOF
 function ifexist ()
 {
 	local	ft_write="$1"
-	local	name="$2"
+	local	filename="$2"
+	local	args="${@:3}"
+	local	action="Created"
 
-	if [ -e "$name" ]
+	if [ -e "$filename" ]
 	then
-		read -p "($name) already exist. Overwrite [y/n]: " write
-		if [ "$write" != 'y' ]
+		read -p "($filename) already exist. Overwrite [y/n]: " write
+		if ! [[ "$write" =~ ^['yY']$ ]]
 		then
+			echo "Aborted" >&2
 			return 1
 		fi
+		action="Overwrote"
 	fi
-	"$ft_write" "${@:3}" > "$name"
+	"$ft_write" "$args" > "$filename"
+	echo "$action $filename"
 }
 
 if [ $# -eq 0 ]
