@@ -17,12 +17,12 @@ function cppmakefile ()
 	<< "EOF" cat
 
 CXX			:=	c++
-CXXFLAGS	:=	-Wall -Werror -Wextra -std=c++98 -pedantic -MMD
+# CXX			+=	-fsanitize=address -g -D SAN=1
+
+CXXFLAGS	:=	-Wall -Wextra -Werror -std=c++98
 CXXFLAGS	+=	-g
-# CXXFLAGS	+=	-Wno-unused-variable -Wno-unused-parameter -Wno-unused-function
-ifdef SAN
-CXXFLAGS	+=	-fsanitize=address -g -D SAN=1
-endif
+# CXXFLAGS	+=	-pedantic
+# CXXFLAGS	+=	-Wno-unused -Wno-unused-parameter
 
 SRC_DIR		:=	srcs
 SRCS		:=	$(shell find ${SRC_DIR} -name "*.cpp")
@@ -33,7 +33,6 @@ CPPFLAGS	:=	$(addprefix -I, $(dir ${HEADER}))
 OBJ_DIR		:=	objs
 OBJS		:=	$(patsubst ${SRC_DIR}%.cpp, ${OBJ_DIR}%.o, ${SRCS})
 
-DEPENDS		:=	$(patsubst %.o, %.d, ${OBJS})
 
 GREY		:=	\033[30m
 RED			:=	\033[31m
@@ -43,7 +42,7 @@ RESET		:=	\033[0m
 
 all: ${NAME}
 
--include ${DEPENDS}
+-include $(patsubst %.o, %.d, ${OBJS} ${MAIN_OBJS})
 
 ${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp
 	@mkdir -p ${@D}
@@ -52,8 +51,8 @@ ${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp
 	&& $$command
 
 ${NAME}: ${OBJS}
-	@command="${CXX} ${CXXFLAGS} $^ -o $@" \
-	&& printf "${LIGHT_CYAN}$$command${RESET}\n" \
+	@command="${CXX} $^ -o $@" \
+	&& printf "${LIGHT_CYAN}$$(sed 's@$^@\$${OBJS}@g' <<< "$$command")${RESET}\n" \
 	&& $$command
 
 clean:
@@ -101,8 +100,8 @@ else
 	name="$@"
 fi
 
-ifexist cppmakefile Makefile "$name" 
+ifexist cppmakefile Makefile "$name"
 mkdir -p srcs
 # ifexist stdmain "srcs/main.cpp"
 ! [ -e srcs/main.cpp ] && stdmain > srcs/main.cpp
-exit 1
+exit 0

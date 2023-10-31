@@ -4,11 +4,12 @@ function cmakefile()
 	<< "EOF" cat
 
 CC			:=	gcc
-CXXFLAGS	:=	-Wall -Werror -Wextra -pedantic -MMD
+CC			+=	-fsanitize=address -g -D SAN=1
+
+CXXFLAGS	:=	-Wall -Wextra -Werror -pedantic -MMD
 CXXFLAGS	+=	-g
 # CXXFLAGS	+=	-Wno-unused-variable -Wno-unused-parameter -Wno-unused-function
 ifdef SAN
-CXXFLAGS	+=	-fsanitize=address -g -D SAN=1
 endif
 
 SRC_DIR		:=	srcs
@@ -45,7 +46,7 @@ ${OBJ_DIR}/%.o: ${SRC_DIR}/%.c
 	&& $$command
 
 ${NAME}: ${OBJS} ${LIBFT}
-	@command="${CC} ${CXXFLAGS} $^ -o $@" \
+	@command="${CC} $^ -o $@" \
 	&& printf "${LIGHT_CYAN}$$(sed 's@${OBJS}@\$${OBJS}@g' <<< "$$command")${RESET}\n" \
 	&& $$command
 
