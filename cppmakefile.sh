@@ -31,28 +31,29 @@ OBJ_DIR		:=	objs
 OBJS		:=	$(patsubst ${SRC_DIR}%.cpp, ${OBJ_DIR}%.o, ${SRCS})
 
 STDAFX		:=	${SRC_DIR}/stdafx.hpp
-PCH			:=	${patsubst ${SRC_DIR}/%.hpp, ${OBJ_DIR}/%.gch, ${STDAFX}}
+PCH			:=	$(patsubst ${SRC_DIR}/%.hpp, ${OBJ_DIR}/%.gch, ${STDAFX})
 
 HEADER		:=	$(shell find ${SRC_DIR} -name "*.hpp")
-CPPFLAGS	:=	$(addprefix -I, $(dir ${HEADER}))
-CPPFLAGS	+=	-include-pch ${PCH}
-CPPFLAGS	+=	-MMD
+INCLUDES	:=	$(addprefix -I, $(dir ${HEADER})) -MMD
+CPPFLAGS	:=	${INCLUDES} -include-pch ${PCH}
 
-GREY		:=	\033[30m
-RED			:=	\033[31m
-CYAN		:=	\033[36m
-LIGHT_CYAN	:=	\033[1;36m
-RESET		:=	\033[0m
+RESET				:=	\033[0m
+RED					:=	\033[31m
+CYAN				:=	\033[36m
+BOLD_LIGHT_GREEN	:=	\033[1;92m
+BOLD_LIGHT_CYAN		:=	\033[1;96m
 
 all: ${NAME}
 
--include $(patsubst %.o, %.d, ${OBJS} ${MAIN_OBJS})
+-include $(patsubst %.o, %.d, ${OBJS} ${MAIN_OBJS}) $(patsubst %.gch, %.d, ${PCH})
 
 ${OBJ_DIR}:
-	mkdir $@
+	@mkdir $@
 
 ${PCH}: ${STDAFX} | ${OBJ_DIR}
-	${CXX} ${CXXFLAGS} $< -o $@
+	@command="${CXX} ${CXXFLAGS} ${INCLUDES} $< -o $@" \
+	&& printf "${BOLD_LIGHT_CYAN}$$(sed 's@${INCLUDES}@\$${INCLUDES}@g' <<< "$$command")${RESET}\n" \
+	&& $$command
 
 ${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp | ${PCH}
 	@mkdir -p ${@D}
@@ -62,7 +63,7 @@ ${OBJ_DIR}/%.o: ${SRC_DIR}/%.cpp | ${PCH}
 
 ${NAME}: ${OBJS}
 	@command="${CXX} $^ -o $@" \
-	&& printf "${LIGHT_CYAN}$$(sed 's@$^@\$${OBJS}@g' <<< "$$command")${RESET}\n" \
+	&& printf "${BOLD_LIGHT_GREEN}$$(sed 's@$^@\$${OBJS}@g' <<< "$$command")${RESET}\n" \
 	&& $$command
 
 clean:
