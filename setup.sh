@@ -6,9 +6,13 @@ export EVAL="$DOWNLOADS/code/kickoff_ev"
 export PRG="$HOME/exec"
 export PDF="$DOWNLOADS/pdf"
 
-PATH="$PATH:\
-$PRG:\
+export BOT="$DOWNLOADS/code/42hackathon2023"
+
+PATH="\
 $HOME/Desktop/Visual Studio Code.app/Contents/Resources/app/bin:\
+$PATH:\
+$PRG:\
+$PRG/mongobin:\
 "
 
 # alias
