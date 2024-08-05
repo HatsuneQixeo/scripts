@@ -19,7 +19,7 @@ function capital_substitution()
 
 function classtemplate_header()
 {
-	local	capguard="$(capital_substitution "${name}HPP")"
+	local	capguard="$(capital_substitution "${name}")_HPP"
 
 	<< EOF cat
 #ifndef $capguard
@@ -97,6 +97,12 @@ std::ostream	&operator<<(std::ostream &os, const $name &ref)
 }
 EOF
 }
+
+if [ $# -eq 0 ]
+then
+	echo "usage: $0 <class_name> ..."
+	exit 1
+fi
 
 for name in "$@"
 do

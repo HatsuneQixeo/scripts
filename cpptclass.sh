@@ -1,8 +1,25 @@
 #!/bin/bash
 
+function capital_substitution()
+{
+	local	str="$1"
+	local	result
+	local	prev_islower=1
+
+	for ((i = 0; i < ${#str}; i++))
+	do
+		local	c="${str:$i:1}"
+
+		[ $prev_islower -eq 0 ] && [[ "$c" =~ [[:upper:]] ]] && result+="_"
+		[[ "$c" =~ [[:lower:]] ]]; prev_islower=$?
+		result+="$c"
+	done
+	echo "$result" | tr [:lower:] [:upper:]
+}
+
 function tclasstemplate_source()
 {
-	local	capguard="$(tr [:lower:] [:upper:] <<< "$name")_TPP"
+	local	capguard="$(capital_substitution "${name}")_TPP"
 
 	<< EOF cat
 #ifndef $capguard
@@ -43,6 +60,14 @@ $templateName	&$templateName::operator=(const $name &ref)
 
 /* Member Functions */
 
+/* Log */
+$template
+std::ostream	&operator<<(std::ostream &os, const $templateName &ref)
+{
+	/* Log */
+	return (os);
+}
+
 
 #endif
 EOF
@@ -50,7 +75,7 @@ EOF
 
 function tclasstemplate_header()
 {
-	local	capguard="$(tr [:lower:] [:upper:] <<< "$name")_HPP"
+	local	capguard="$(capital_substitution "${name}")_HPP"
 
 	<< EOF cat
 #ifndef $capguard
@@ -79,11 +104,20 @@ class $name
 
 };
 
+$template
+std::ostream	&operator<<(std::ostream &os, const $templateName &ref);
+
 # include "$name.tpp"
 
 #endif
 EOF
 }
+
+if [ $# -eq 0 ]
+then
+	echo "usage: $0 <class_name> ..."
+	exit 1
+fi
 
 for name in "$@"
 do
